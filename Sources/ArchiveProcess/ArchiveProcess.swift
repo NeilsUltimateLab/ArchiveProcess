@@ -1,6 +1,31 @@
-public struct ArchiveProcess {
-    public private(set) var text = "Hello, World!"
+import Foundation
+import ArgumentParser
+import Core
+import Uploader
+import ArchiveCore
 
-    public init() {
+struct ArchiveProcess: ParsableCommand {
+    
+    static var configuration: CommandConfiguration {
+        CommandConfiguration(
+            subcommands: [
+                Install.self,
+                Uninstall.self,
+                Run.self,
+                Prepare.self,
+                Archive.self,
+                GenerateIPA.self,
+                UploadToDiawi.self,
+                PrePush.self
+            ],
+            defaultSubcommand: Install.self
+        )
     }
+    
+    func run() throws {
+        try Install().run()
+    }
+    
 }
+
+
