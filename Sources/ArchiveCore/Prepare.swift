@@ -13,13 +13,14 @@ public struct Prepare: ParsableCommand {
     public init() {}
     
     public static var configuration: CommandConfiguration {
-        CommandConfiguration(subcommands: [PrepareBuildInfo.self, PrepareExportOptions.self])
+        CommandConfiguration(subcommands: [PrepareBuildInfo.self, PrepareExportOptions.self, ClearPreviousArtifacts.self])
     }
     
     public func run() throws {
         print("> Preparing the files -------")
         try PrepareBuildInfo().run()
         try PrepareExportOptions().run()
+        try ClearPreviousArtifacts().run()
     }
     
     public struct PrepareBuildInfo: ParsableCommand {
@@ -98,4 +99,14 @@ public struct Prepare: ParsableCommand {
                 .data(using: .utf8)
         }
     }
+    
+    public struct ClearPreviousArtifacts: ParsableCommand, BuildInfoProvider {
+        public init() {}
+        public func run() throws {
+            let archivePath = try archivePath()
+            let exportPath = try ipaExportPath()
+            try? FileManager.default.removeItem(atPath: archivePath)
+            try? FileManager.default.removeItem(atPath: exportPath)
+        }
     }
+}
