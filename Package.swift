@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.2"),
         .package(name: "Gzip", url: "https://github.com/1024jp/GzipSwift", from: "5.1.1"),
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0"))
     ],
@@ -33,7 +33,8 @@ let package = Package(
                 "Core",
                 "Gzip",
                 "Uploader",
-                "ArchiveCore"
+                "ArchiveCore",
+                "Moya"
             ]
         ),
         .executableTarget(
@@ -52,7 +53,12 @@ let package = Package(
         ]),
         .testTarget(
             name: "ArchiveProcessTests",
-            dependencies: ["ArchiveProcess"]
+            dependencies: [
+                "ArchiveProcess",
+                "Moya",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                "Gzip"
+            ]
         ),
     ]
 )
