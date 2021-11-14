@@ -63,7 +63,7 @@ public extension BuildInfoProvider {
     func archiveCommands() throws -> String {
         let info = try buildInfo()
         let path = try archivePath()
-        return [
+        let command = [
             "xcodebuild",
             info.projectType,
             info.projectPath.wrappedInQuotes,
@@ -71,6 +71,8 @@ public extension BuildInfoProvider {
             "-archivePath", path.wrappedInQuotes,
             "archive"
         ].joined(separator: " ")
+        print("Running comamnd: ----\n\(command)")
+        return command
     }
     
     func ipaCommand() throws -> String {
@@ -79,12 +81,14 @@ public extension BuildInfoProvider {
         guard let plistPath = plistPath else {
             throw BuildInfoError.canNotFindExportOptions
         }
-        return [
+        let command = [
             "xcodebuild",
             "-exportArchive",
             "-archivePath", path.wrappedInQuotes,
             "-exportPath", exportPath.wrappedInQuotes,
             "-exportOptionsPlist", plistPath.wrappedInQuotes
         ].joined(separator: " ")
+        print("Running comamnd: ----\n\(command)")
+        return command
     }
 }
