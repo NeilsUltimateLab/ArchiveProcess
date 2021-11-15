@@ -60,7 +60,6 @@ let package = Package(
                 "ArchiveProcess",
                 "Moya",
                 "Gzip",
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),
     ]
