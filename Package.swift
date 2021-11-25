@@ -19,9 +19,9 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.2"),
         .package(name: "Gzip", url: "https://github.com/1024jp/GzipSwift", from: "5.1.1"),
-        .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0"))
+        .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
+        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser", from: "1.0.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -29,24 +29,27 @@ let package = Package(
         .executableTarget(
             name: "ArchiveProcess",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "Core",
                 "Gzip",
                 "Uploader",
                 "ArchiveCore",
-                "Moya"
+                "Moya",
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),
         .executableTarget(
             name: "PrePush",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "ArchiveCore",
                 "Uploader",
                 "Core"
             ]
         ),
-        .target(name: "ArchiveCore"),
+        .target(name: "ArchiveCore", dependencies: [
+            .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            "Uploader",
+            "Core"
+        ]),
         .target(name: "Core"),
         .target(name: "Uploader", dependencies: [
             "Moya"
@@ -56,8 +59,7 @@ let package = Package(
             dependencies: [
                 "ArchiveProcess",
                 "Moya",
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "Gzip"
+                "Gzip",
             ]
         ),
     ]

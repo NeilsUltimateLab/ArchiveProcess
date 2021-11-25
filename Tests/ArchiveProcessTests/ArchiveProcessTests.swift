@@ -1,5 +1,4 @@
 import XCTest
-@testable import ArchiveProcess
 
 final class ArchiveProcessTests: XCTestCase {
     func testExample() throws {
