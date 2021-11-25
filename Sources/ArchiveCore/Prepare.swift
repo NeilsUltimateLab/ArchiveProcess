@@ -42,6 +42,7 @@ public struct Prepare: ParsableCommand {
                 print("Successfully copied the existing build info file.")
                 UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
             } else {
+                print("Can not find buildInfo.json at : \(currentWorkingPath)")
                 try BuildInformation.placeholder.write(to: url)
                 print("Opening buildInfo.json file. Please fill the necessary information in it.")
                 let openCode = Process.runZshCommand("open . \(url)")
@@ -67,6 +68,8 @@ public struct Prepare: ParsableCommand {
                 try FileManager.default.copyItem(atPath: currentPath.path, toPath: plistPath!)
                 print("Successfully copied the existing export options file.")
                 return
+            } else {
+                print("Can not find ExportOptions.plist at : \(currentPath)")
             }
             guard let plistPath = plistPath else {
                 throw ProcessError.canNotGetBuildInfo
