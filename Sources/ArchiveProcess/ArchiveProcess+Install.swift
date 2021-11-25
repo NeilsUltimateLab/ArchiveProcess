@@ -25,7 +25,7 @@ extension ArchiveProcess {
             if prepushCode != 0 {
                 throw ProcessError.canNotInstall
             }
-            print("Congratulations 🥳! `ArchiveProcess` is installed in your machine successfully. 🎉")
+            print("Congratulations 🥳! `ArchiveProcess-\(ArchiveProcess.configuration.version)` is installed in your machine successfully. 🎉")
         }
     }
     

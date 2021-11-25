@@ -8,6 +8,7 @@ struct ArchiveProcess: ParsableCommand {
     
     static var configuration: CommandConfiguration {
         CommandConfiguration(
+            version: "1.0.0",
             subcommands: [
                 Install.self,
                 Uninstall.self,
