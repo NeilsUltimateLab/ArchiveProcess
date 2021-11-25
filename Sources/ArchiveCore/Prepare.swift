@@ -26,11 +26,11 @@ public struct Prepare: ParsableCommand {
     public struct PrepareBuildInfo: ParsableCommand {
         public init() {}
         public func run() throws {
-            let path = try FileManager.default.createDirectory(named: "../../ArchiveProcess-Artificats")
-            print("Created the directory `ArchiveProcess-Artificats` at \(path)")
+            let path = try FileManager.default.createDirectory(named: ".archiveProcess")
+            print("Created the directory `archiveProcess` at \(path)")
             UserDefaults.standard.setValue(path, forKey: "workingDirectory")
             
-            let currentWorkingPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("../buildInfo.json")
+            let currentWorkingPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("buildInfo.json")
             
             // Create the build info placeholder if needed
             let url = URL(fileURLWithPath: path).appendingPathComponent("buildInfo.json")
@@ -63,7 +63,7 @@ public struct Prepare: ParsableCommand {
         }
         
         func generatePlist(from info: BuildInformation) throws {
-            let currentPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("../ExportOptions.plist")
+            let currentPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("ExportOptions.plist")
             if FileManager.default.fileExists(atPath: currentPath.path) {
                 try FileManager.default.copyItem(atPath: currentPath.path, toPath: plistPath!)
                 print("Successfully copied the existing export options file.")
