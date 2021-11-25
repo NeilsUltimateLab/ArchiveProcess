@@ -30,11 +30,16 @@ public struct Prepare: ParsableCommand {
             print("Created the directory `ArchiveProcess-Artificats` at \(path)")
             UserDefaults.standard.setValue(path, forKey: "workingDirectory")
             
+            let currentWorkingPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("../buildInfo.json")
+            
             // Create the build info placeholder if needed
             let url = URL(fileURLWithPath: path).appendingPathComponent("buildInfo.json")
             if FileManager.default.fileExists(atPath: url.path) {
                 UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
                 return
+            } else if FileManager.default.fileExists(atPath: currentWorkingPath.path) {
+                try FileManager.default.copyItem(at: URL(fileURLWithPath: currentWorkingPath.path), to: url)
+                UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
             } else {
                 try BuildInformation.placeholder.write(to: url)
                 print("Opening buildInfo.json file. Please fill the necessary information in it.")
@@ -56,6 +61,11 @@ public struct Prepare: ParsableCommand {
         }
         
         func generatePlist(from info: BuildInformation) throws {
+            let currentPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("../ExportOptions.plist")
+            if FileManager.default.fileExists(atPath: currentPath.path) {
+                try FileManager.default.copyItem(atPath: currentPath.path, toPath: plistPath!)
+                return
+            }
             guard let plistPath = plistPath else {
                 throw ProcessError.canNotGetBuildInfo
             }

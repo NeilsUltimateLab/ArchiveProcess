@@ -71,7 +71,6 @@ public extension BuildInfoProvider {
             "-archivePath", path.wrappedInQuotes,
             "archive"
         ].joined(separator: " ")
-        print("Running comamnd: ----\n\(command)")
         return command
     }
     
@@ -88,7 +87,6 @@ public extension BuildInfoProvider {
             "-exportPath", exportPath.wrappedInQuotes,
             "-exportOptionsPlist", plistPath.wrappedInQuotes
         ].joined(separator: " ")
-        print("Running comamnd: ----\n\(command)")
         return command
     }
 }

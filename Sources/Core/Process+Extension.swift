@@ -14,6 +14,7 @@ public extension Process {
         let process = Process()
         process.launchPath = "/bin/zsh"
         process.arguments = ["-c", command]
+        print("Running command -----\n\(command)")
         
         process.standardOutput = {
             let pipe = Pipe()
