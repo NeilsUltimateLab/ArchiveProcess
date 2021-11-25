@@ -39,6 +39,7 @@ public struct Prepare: ParsableCommand {
                 return
             } else if FileManager.default.fileExists(atPath: currentWorkingPath.path) {
                 try FileManager.default.copyItem(at: URL(fileURLWithPath: currentWorkingPath.path), to: url)
+                print("Successfully copied the existing build info file.")
                 UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
             } else {
                 try BuildInformation.placeholder.write(to: url)
@@ -64,6 +65,7 @@ public struct Prepare: ParsableCommand {
             let currentPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("../ExportOptions.plist")
             if FileManager.default.fileExists(atPath: currentPath.path) {
                 try FileManager.default.copyItem(atPath: currentPath.path, toPath: plistPath!)
+                print("Successfully copied the existing export options file.")
                 return
             }
             guard let plistPath = plistPath else {
