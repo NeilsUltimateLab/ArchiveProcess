@@ -18,10 +18,13 @@ public struct Run: ParsableCommand, BuildInfoProvider {
     public init() {}
     public func run() throws {
         print(">> Running the complete process -------")
+        let startDate = Date()
         try Prepare().run()
         try Archive().run()
         try GenerateIPA().run()
         try Reupload().run()
+        let components = Calendar.current.dateComponents([.hour, .minute, .second], from: startDate, to: Date())
+        print(">> It took \(components.hour ?? 0)h - \(components.minute ?? 0)m - \(components.second ?? 0)s to complete whole process")
     }
 }
 

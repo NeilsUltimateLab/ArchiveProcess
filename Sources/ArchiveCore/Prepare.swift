@@ -26,6 +26,7 @@ public struct Prepare: ParsableCommand {
     public struct PrepareBuildInfo: ParsableCommand {
         public init() {}
         public func run() throws {
+            FileManager.default.remove(at: FileManager.default.currentDirectoryPath.appending("/.archiveProcess"))
             let path = try FileManager.default.createDirectory(named: ".archiveProcess")
             print("Created the directory `archiveProcess` at \(path)")
             UserDefaults.standard.setValue(path, forKey: "workingDirectory")
