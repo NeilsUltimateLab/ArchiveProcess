@@ -9,10 +9,12 @@ import Foundation
 
 public struct Uploader {
     public var file: DiawiFile
+    public var onCompletion: (()->Void)?
     var uploader = DiawiUploader()
     
-    public init(file: DiawiFile) {
+    public init(file: DiawiFile, onCompletion: (()->Void)? = nil) {
         self.file = file
+        self.onCompletion = onCompletion
     }
     
     public func run() {
@@ -30,6 +32,7 @@ public struct Uploader {
             case .failure(let error):
                 print(error)
             }
+            onCompletion?()
             Foundation.exit(EXIT_SUCCESS)
         }
         RunLoop.main.run()

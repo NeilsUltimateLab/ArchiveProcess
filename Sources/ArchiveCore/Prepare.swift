@@ -13,7 +13,12 @@ public struct Prepare: ParsableCommand {
     public init() {}
     
     public static var configuration: CommandConfiguration {
-        CommandConfiguration(subcommands: [PrepareBuildInfo.self, PrepareExportOptions.self, ClearPreviousArtifacts.self])
+        CommandConfiguration(subcommands: [
+            PrepareBuildInfo.self,
+            PrepareExportOptions.self,
+            ClearPreviousArtifacts.self,
+            InstallXCPrettyIfNeeded.self
+        ])
     }
     
     public func run() throws {
@@ -21,6 +26,38 @@ public struct Prepare: ParsableCommand {
         try PrepareBuildInfo().run()
         try PrepareExportOptions().run()
         try ClearPreviousArtifacts().run()
+        try InstallXCPrettyIfNeeded().run()
+    }
+    
+    public struct InstallXCPrettyIfNeeded: ParsableCommand {
+        public init() {}
+        
+        public static var configuration: CommandConfiguration {
+            CommandConfiguration(
+                commandName: "install-xcpretty",
+                abstract: "Checks for XCPretty installation in the machine. If not found it will try to install using Ruby.",
+                discussion: "XCPretty outputs readable xcode logs to console. This command will check for XCPretty, if not found it will try to install using Ruby",
+                helpNames: NameSpecification.shortAndLong
+            )
+        }
+        
+        public func run() throws {
+            let command = """
+            if which xcpretty;
+            then
+              echo "XCPretty is installed on the System. Good to Continue 🤞🏻"
+            else
+              echo "Installing XCPretty ..."
+              sudo gem install xcpretty --verbose
+            fi
+            """
+            let code = Process.runZshCommand(command)
+            if code != 0 {
+                throw PreparationError.invalidateXCPrettyCommand
+            } else {
+                print("Successfully completed Install XCPretty Step 🥳")
+            }
+        }
     }
     
     public struct PrepareBuildInfo: ParsableCommand {
@@ -124,5 +161,9 @@ public struct Prepare: ParsableCommand {
             try? FileManager.default.removeItem(atPath: archivePath)
             try? FileManager.default.removeItem(atPath: exportPath)
         }
+    }
+    
+    public enum PreparationError: Error {
+        case invalidateXCPrettyCommand
     }
 }
