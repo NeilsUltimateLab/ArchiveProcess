@@ -10,17 +10,19 @@ import ArgumentParser
 import Core
 import Utilities
 
-public struct GenerateIPA: ParsableCommand, BuildInfoProvider {
+public struct GenerateIPA: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     public init() {}
     public func run() throws {
-        log(">> Generating IPA from Archive ------", with: .yellow)
-        let ipaCommand = try self.ipaCommand()
-        let code = Process.runZshCommand(ipaCommand)
-        if code != 0 {
-            throw ProcessError.canNotGenerateIPA
+        try self.measure {
+            log(">> Generating IPA from Archive ------", with: .yellow)
+            let ipaCommand = try self.ipaCommand()
+            let code = Process.runZshCommand(ipaCommand)
+            if code != 0 {
+                throw ProcessError.canNotGenerateIPA
+            }
+            let path = try self.ipaPath()
+            UserDefaults.standard.set(path, forKey: "ipaPath")
+            log(">> IPA Generated successfully! 🎉", with: .green)
         }
-        let path = try self.ipaPath()
-        UserDefaults.standard.set(path, forKey: "ipaPath")
-        log(">> IPA Generated successfully! 🎉", with: .green)
     }
 }

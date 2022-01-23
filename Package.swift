@@ -11,17 +11,14 @@ let package = Package(
         .executable(
             name: "ArchiveProcess",
             targets: ["ArchiveProcess"]
-        ),
-        .executable(
-            name: "PrePush",
-            targets: ["PrePush"]
         )
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(name: "Gzip", url: "https://github.com/1024jp/GzipSwift", from: "5.1.1"),
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser", from: "1.0.2")
+        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser", from: "1.0.2"),
+        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -38,15 +35,6 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),
-        .executableTarget(
-            name: "PrePush",
-            dependencies: [
-                "Utilities",
-                "ArchiveCore",
-                "Uploader",
-                "Core"
-            ]
-        ),
         .target(name: "ArchiveCore", dependencies: [
             .product(name: "ArgumentParser", package: "swift-argument-parser"),
             "Uploader",
@@ -61,7 +49,10 @@ let package = Package(
             "Moya"
         ]),
         .target(
-            name: "Utilities"
+            name: "Utilities", dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "SwiftyTextTable", package: "SwiftyTextTable")
+            ]
         ),
         .testTarget(
             name: "ArchiveProcessTests",

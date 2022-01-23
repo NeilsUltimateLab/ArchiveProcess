@@ -10,15 +10,17 @@ import Utilities
 import ArgumentParser
 import Core
 
-public struct Archive: ParsableCommand, BuildInfoProvider {
+public struct Archive: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     public init() {}
     public func run() throws {
-        log(">> Archiving the project -------", with: .yellow)
-        let archiveCommand = try self.archiveCommands()
-        let code = Process.runZshCommand(archiveCommand)
-        if code != 0 {
-            throw ProcessError.canNotGenerateArchive
+        try self.measure {
+            log(">> Archiving the project -------", with: .yellow)
+            let archiveCommand = try self.archiveCommands()
+            let code = Process.runZshCommand(archiveCommand)
+            if code != 0 {
+                throw ProcessError.canNotGenerateArchive
+            }
+            log(">> Archive Generated successfully! 🎉", with: .green)
         }
-        log(">> Archive Generated successfully! 🎉", with: .green)
     }
 }

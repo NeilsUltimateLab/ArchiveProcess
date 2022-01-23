@@ -11,7 +11,7 @@ import Uploader
 import Core
 import Utilities
 
-public struct UploadToDiawi: ParsableCommand {
+public struct UploadToDiawi: ParsableCommand, MeasuredCommand {
     public init() {}
     
     @Argument
@@ -36,9 +36,11 @@ public struct UploadToDiawi: ParsableCommand {
     }
     
     public func run() throws {
-        log("\n>> Uplading to Diawi -------", with: .yellow)
-        let file = DiawiFile(url, fileName: fileName, token: token, emails: emails)
-        log("Created the uploader, file: \(file, color: .blue)", with: .yellow)
-        Uploader(file: file).run()
+        try self.measure {
+            log("\n>> Uplading to Diawi -------", with: .yellow)
+            let file = DiawiFile(url, fileName: fileName, token: token, emails: emails)
+            log("Created the uploader, file: \(file, color: .blue)", with: .yellow)
+            Uploader(file: file).run()
+        }
     }
 }

@@ -10,7 +10,7 @@ import ArgumentParser
 import Core
 import Utilities
 
-public struct Prepare: ParsableCommand {
+public struct Prepare: ParsableCommand, MeasuredCommand {
     public init() {}
     
     public static var configuration: CommandConfiguration {
@@ -23,11 +23,13 @@ public struct Prepare: ParsableCommand {
     }
     
     public func run() throws {
-        log("> Preparing the files -------", with: .yellow)
-        try PrepareBuildInfo().run()
-        try PrepareExportOptions().run()
-        try ClearPreviousArtifacts().run()
-        try InstallXCPrettyIfNeeded().run()
+        try self.measure {
+            log("> Preparing the files -------", with: .yellow)
+            try PrepareBuildInfo().run()
+            try PrepareExportOptions().run()
+            try ClearPreviousArtifacts().run()
+            try InstallXCPrettyIfNeeded().run()
+        }
     }
     
     public struct InstallXCPrettyIfNeeded: ParsableCommand {
@@ -61,44 +63,48 @@ public struct Prepare: ParsableCommand {
         }
     }
     
-    public struct PrepareBuildInfo: ParsableCommand {
+    public struct PrepareBuildInfo: ParsableCommand, MeasuredCommand {
         public init() {}
         public func run() throws {
-            FileManager.default.remove(at: FileManager.default.currentDirectoryPath.appending("/.archiveProcess"))
-            let path = try FileManager.default.createDirectory(named: ".archiveProcess")
-            log("Created the directory `archiveProcess` at \(path)", with: .green)
-            UserDefaults.standard.setValue(path, forKey: "workingDirectory")
-            
-            let currentWorkingPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("buildInfo.json")
-            
-            // Create the build info placeholder if needed
-            let url = URL(fileURLWithPath: path).appendingPathComponent("buildInfo.json")
-            if FileManager.default.fileExists(atPath: url.path) {
-                UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
-                return
-            } else if FileManager.default.fileExists(atPath: currentWorkingPath.path) {
-                try FileManager.default.copyItem(at: URL(fileURLWithPath: currentWorkingPath.path), to: url)
-                log("Successfully copied the existing build info file.", with: .green)
-                UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
-            } else {
-                log("Can not find buildInfo.json at : \(currentWorkingPath)", with: .yellow)
-                try BuildInformation.placeholder.write(to: url)
-                log("Opening buildInfo.json file. Please fill the necessary information in it.", with: .yellow)
-                let openCode = Process.runZshCommand("open . \(url)")
-                if openCode != 0 {
-                    throw ProcessError.canNotOpenBuildInfoFile
+            try self.measure {
+                FileManager.default.remove(at: FileManager.default.currentDirectoryPath.appending("/.archiveProcess"))
+                let path = try FileManager.default.createDirectory(named: ".archiveProcess")
+                log("Created the directory `archiveProcess` at \(path)", with: .green)
+                UserDefaults.standard.setValue(path, forKey: "workingDirectory")
+                
+                let currentWorkingPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("buildInfo.json")
+                
+                // Create the build info placeholder if needed
+                let url = URL(fileURLWithPath: path).appendingPathComponent("buildInfo.json")
+                if FileManager.default.fileExists(atPath: url.path) {
+                    UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
+                    return
+                } else if FileManager.default.fileExists(atPath: currentWorkingPath.path) {
+                    try FileManager.default.copyItem(at: URL(fileURLWithPath: currentWorkingPath.path), to: url)
+                    log("Successfully copied the existing build info file.", with: .green)
+                    UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
+                } else {
+                    log("Can not find buildInfo.json at : \(currentWorkingPath)", with: .yellow)
+                    try BuildInformation.placeholder.write(to: url)
+                    log("Opening buildInfo.json file. Please fill the necessary information in it.", with: .yellow)
+                    let openCode = Process.runZshCommand("open . \(url)")
+                    if openCode != 0 {
+                        throw ProcessError.canNotOpenBuildInfoFile
+                    }
+                    UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
                 }
-                UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
             }
         }
     }
     
-    public struct PrepareExportOptions: ParsableCommand, BuildInfoProvider {
+    public struct PrepareExportOptions: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         public init() {}
         public func run() throws {
-            log("Building the project", with: .yellow)
-            let buildInfo = try buildInfo()
-            try generatePlist(from: buildInfo)
+            try self.measure {
+                log("Building the project", with: .yellow)
+                let buildInfo = try buildInfo()
+                try generatePlist(from: buildInfo)
+            }
         }
         
         func generatePlist(from info: BuildInformation) throws {
@@ -154,13 +160,15 @@ public struct Prepare: ParsableCommand {
         }
     }
     
-    public struct ClearPreviousArtifacts: ParsableCommand, BuildInfoProvider {
+    public struct ClearPreviousArtifacts: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         public init() {}
         public func run() throws {
-            let archivePath = try archivePath()
-            let exportPath = try ipaExportPath()
-            try? FileManager.default.removeItem(atPath: archivePath)
-            try? FileManager.default.removeItem(atPath: exportPath)
+            try self.measure {
+                let archivePath = try archivePath()
+                let exportPath = try ipaExportPath()
+                try? FileManager.default.removeItem(atPath: archivePath)
+                try? FileManager.default.removeItem(atPath: exportPath)
+            }
         }
     }
     
