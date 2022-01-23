@@ -6,18 +6,19 @@
 //
 
 import Foundation
+import Utilities
 import ArgumentParser
 import Core
 
 public struct Archive: ParsableCommand, BuildInfoProvider {
     public init() {}
     public func run() throws {
-        print(">> Archiving the project -------")
+        log(">> Archiving the project -------", with: .yellow)
         let archiveCommand = try self.archiveCommands()
         let code = Process.runZshCommand(archiveCommand)
         if code != 0 {
             throw ProcessError.canNotGenerateArchive
         }
-        print(">> Archive Generated successfully! 🎉")
+        log(">> Archive Generated successfully! 🎉", with: .green)
     }
 }

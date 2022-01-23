@@ -8,11 +8,12 @@
 import Foundation
 import ArgumentParser
 import Core
+import Utilities
 
 public struct GenerateIPA: ParsableCommand, BuildInfoProvider {
     public init() {}
     public func run() throws {
-        print(">> Generating IPA from Archive ------")
+        log(">> Generating IPA from Archive ------", with: .yellow)
         let ipaCommand = try self.ipaCommand()
         let code = Process.runZshCommand(ipaCommand)
         if code != 0 {
@@ -20,6 +21,6 @@ public struct GenerateIPA: ParsableCommand, BuildInfoProvider {
         }
         let path = try self.ipaPath()
         UserDefaults.standard.set(path, forKey: "ipaPath")
-        print(">> IPA Generated successfully! 🎉")
+        log(">> IPA Generated successfully! 🎉", with: .green)
     }
 }

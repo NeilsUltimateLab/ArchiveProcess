@@ -8,6 +8,7 @@
 import Foundation
 import ArgumentParser
 import Core
+import Utilities
 
 public struct Prepare: ParsableCommand {
     public init() {}
@@ -22,7 +23,7 @@ public struct Prepare: ParsableCommand {
     }
     
     public func run() throws {
-        print("> Preparing the files -------")
+        log("> Preparing the files -------", with: .yellow)
         try PrepareBuildInfo().run()
         try PrepareExportOptions().run()
         try ClearPreviousArtifacts().run()
@@ -55,7 +56,7 @@ public struct Prepare: ParsableCommand {
             if code != 0 {
                 throw PreparationError.invalidateXCPrettyCommand
             } else {
-                print("Successfully completed Install XCPretty Step 🥳")
+                log("Successfully completed Install XCPretty Step 🥳", with: .green)
             }
         }
     }
@@ -65,7 +66,7 @@ public struct Prepare: ParsableCommand {
         public func run() throws {
             FileManager.default.remove(at: FileManager.default.currentDirectoryPath.appending("/.archiveProcess"))
             let path = try FileManager.default.createDirectory(named: ".archiveProcess")
-            print("Created the directory `archiveProcess` at \(path)")
+            log("Created the directory `archiveProcess` at \(path)", with: .green)
             UserDefaults.standard.setValue(path, forKey: "workingDirectory")
             
             let currentWorkingPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("buildInfo.json")
@@ -77,12 +78,12 @@ public struct Prepare: ParsableCommand {
                 return
             } else if FileManager.default.fileExists(atPath: currentWorkingPath.path) {
                 try FileManager.default.copyItem(at: URL(fileURLWithPath: currentWorkingPath.path), to: url)
-                print("Successfully copied the existing build info file.")
+                log("Successfully copied the existing build info file.", with: .green)
                 UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
             } else {
-                print("Can not find buildInfo.json at : \(currentWorkingPath)")
+                log("Can not find buildInfo.json at : \(currentWorkingPath)", with: .yellow)
                 try BuildInformation.placeholder.write(to: url)
-                print("Opening buildInfo.json file. Please fill the necessary information in it.")
+                log("Opening buildInfo.json file. Please fill the necessary information in it.", with: .yellow)
                 let openCode = Process.runZshCommand("open . \(url)")
                 if openCode != 0 {
                     throw ProcessError.canNotOpenBuildInfoFile
@@ -95,7 +96,7 @@ public struct Prepare: ParsableCommand {
     public struct PrepareExportOptions: ParsableCommand, BuildInfoProvider {
         public init() {}
         public func run() throws {
-            print("Building the project")
+            log("Building the project", with: .yellow)
             let buildInfo = try buildInfo()
             try generatePlist(from: buildInfo)
         }
@@ -104,10 +105,10 @@ public struct Prepare: ParsableCommand {
             let currentPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("ExportOptions.plist")
             if FileManager.default.fileExists(atPath: currentPath.path) {
                 try FileManager.default.copyItem(atPath: currentPath.path, toPath: plistPath!)
-                print("Successfully copied the existing export options file.")
+                log("Successfully copied the existing export options file.", with: .green)
                 return
             } else {
-                print("Can not find ExportOptions.plist at : \(currentPath)")
+                log("Can not find ExportOptions.plist at : \(currentPath)", with: .red)
             }
             guard let plistPath = plistPath else {
                 throw ProcessError.canNotGetBuildInfo

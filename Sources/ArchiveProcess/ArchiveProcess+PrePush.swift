@@ -8,6 +8,7 @@
 import Foundation
 import ArchiveCore
 import ArgumentParser
+import Utilities
 
 extension ArchiveProcess {
     struct PrePush: ParsableCommand {
@@ -19,7 +20,7 @@ extension ArchiveProcess {
                     throw ProcessError.canNotInstall
                 }
             } else {
-                print("pre-push is not installed")
+                log("pre-push is not installed", with: .red)
             }
         }
     }

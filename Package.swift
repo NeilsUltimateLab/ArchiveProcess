@@ -29,6 +29,7 @@ let package = Package(
         .executableTarget(
             name: "ArchiveProcess",
             dependencies: [
+                "Utilities",
                 "Core",
                 "Gzip",
                 "Uploader",
@@ -40,6 +41,7 @@ let package = Package(
         .executableTarget(
             name: "PrePush",
             dependencies: [
+                "Utilities",
                 "ArchiveCore",
                 "Uploader",
                 "Core"
@@ -48,12 +50,19 @@ let package = Package(
         .target(name: "ArchiveCore", dependencies: [
             .product(name: "ArgumentParser", package: "swift-argument-parser"),
             "Uploader",
+            "Utilities",
             "Core"
         ]),
-        .target(name: "Core"),
+        .target(name: "Core", dependencies: [
+            "Utilities"
+        ]),
         .target(name: "Uploader", dependencies: [
+            "Utilities",
             "Moya"
         ]),
+        .target(
+            name: "Utilities"
+        ),
         .testTarget(
             name: "ArchiveProcessTests",
             dependencies: [

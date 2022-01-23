@@ -9,6 +9,7 @@ import Foundation
 import ArgumentParser
 import Core
 import ArchiveCore
+import Utilities
 
 extension ArchiveProcess {
     struct Install: ParsableCommand {
@@ -25,7 +26,7 @@ extension ArchiveProcess {
             if prepushCode != 0 {
                 throw ProcessError.canNotInstall
             }
-            print("Congratulations 🥳! `ArchiveProcess-\(ArchiveProcess.configuration.version)` is installed in your machine successfully. 🎉")
+            log("Congratulations 🥳! `ArchiveProcess-\(ArchiveProcess.configuration.version)` is installed in your machine successfully. 🎉", with: .green)
         }
     }
     

@@ -71,7 +71,7 @@ public extension BuildInfoProvider {
             "-archivePath", path.wrappedInQuotes,
             "archive"
         ].joined(separator: " ")
-        return command
+        return "\(command) | tee .archiveProcess/xcodebuild.log | xcpretty"
     }
     
     func ipaCommand() throws -> String {

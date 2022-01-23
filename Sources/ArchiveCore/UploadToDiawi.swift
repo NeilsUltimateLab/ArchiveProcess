@@ -9,6 +9,7 @@ import Foundation
 import ArgumentParser
 import Uploader
 import Core
+import Utilities
 
 public struct UploadToDiawi: ParsableCommand {
     public init() {}
@@ -35,9 +36,9 @@ public struct UploadToDiawi: ParsableCommand {
     }
     
     public func run() throws {
-        print("\n>> Uplading to Diawi -------")
+        log("\n>> Uplading to Diawi -------", with: .yellow)
         let file = DiawiFile(url, fileName: fileName, token: token, emails: emails)
-        print("Created the uploader, file: \(file)")
+        log("Created the uploader, file: \(file, color: .blue)", with: .yellow)
         Uploader(file: file).run()
     }
 }
