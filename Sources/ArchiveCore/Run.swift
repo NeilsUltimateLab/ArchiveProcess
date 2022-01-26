@@ -13,7 +13,7 @@ import Utilities
 
 public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     public static var configuration: CommandConfiguration {
-        CommandConfiguration(subcommands: [Reupload.self])
+        CommandConfiguration(subcommands: [Reupload.self, UploadDSYMs.self])
     }
     
     public init() {}
@@ -23,6 +23,7 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         try Prepare().run()
         try Archive().run()
         try GenerateIPA().run()
+        try UploadDSYMs().run()
         try Reupload(onCompletion: {
             let components = Calendar.current.dateComponents([.hour, .minute, .second], from: startDate, to: Date())
             log(">> It took \(components.hour ?? 0, color: .green)h - \(components.minute ?? 0, color: .green)m - \(components.second ?? 0, color: .green)s to complete whole process", with: .blue)

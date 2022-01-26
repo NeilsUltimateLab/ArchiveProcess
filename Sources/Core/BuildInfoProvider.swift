@@ -60,14 +60,20 @@ public extension BuildInfoProvider {
         return try ipaExportPath().appending("/\(info.scheme).ipa")
     }
     
+    func derivedDataPath() throws -> String {
+        return try ipaExportPath().appending("/build-path")
+    }
+    
     func archiveCommands() throws -> String {
         let info = try buildInfo()
         let path = try archivePath()
+        let derivedDataPath = try derivedDataPath()
         let command = [
             "xcodebuild",
             info.projectType,
             info.projectPath.wrappedInQuotes,
             "-scheme", info.scheme.wrappedInQuotes,
+            "-derivedDataPath", derivedDataPath,
             "-archivePath", path.wrappedInQuotes,
             "archive"
         ].joined(separator: " ")

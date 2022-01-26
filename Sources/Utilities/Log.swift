@@ -6,9 +6,19 @@
 //
 
 import Foundation
+import SwiftyTextTable
 
 public func log(_ argument: String, with color: ConsoleColor = .default) {
     print(argument.colorised(to: color))
+}
+
+public func log(table name: String, _ values: [(String, String)]) {
+    let nameColumn = TextTableColumn(header: "Path Key")
+    let valueColumn = TextTableColumn(header: "Path")
+    var table = TextTable(columns: [nameColumn, valueColumn], header: name)
+    let rows = values.map({[$0, $1]})
+    rows.forEach({table.addRow(values: $0)})
+    log(table.render(), with: .blue)
 }
 
 extension String {
