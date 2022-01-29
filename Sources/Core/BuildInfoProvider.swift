@@ -73,6 +73,7 @@ public extension BuildInfoProvider {
             info.projectType,
             info.projectPath.wrappedInQuotes,
             "-scheme", info.scheme.wrappedInQuotes,
+            "-destination generic/platform=iOS",
             "-derivedDataPath", derivedDataPath,
             "-archivePath", path.wrappedInQuotes,
             "archive"
