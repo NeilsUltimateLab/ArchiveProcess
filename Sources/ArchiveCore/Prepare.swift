@@ -28,7 +28,7 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
             try PrepareBuildInfo().run()
             try PrepareExportOptions().run()
             try ClearPreviousArtifacts().run()
-            try InstallXCPrettyIfNeeded().run()
+            try InstallXCbeautifyIfNeeded().run()
         }
     }
     
@@ -52,6 +52,37 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
             else
               echo "Installing XCPretty ..."
               sudo gem install xcpretty --verbose
+            fi
+            """
+            let code = Process.runZshCommand(command)
+            if code != 0 {
+                throw PreparationError.invalidateXCPrettyCommand
+            } else {
+                log("Successfully completed Install XCPretty Step 🥳", with: .green)
+            }
+        }
+    }
+    
+    public struct InstallXCbeautifyIfNeeded: ParsableCommand {
+        public init() {}
+        
+        public static var configuration: CommandConfiguration {
+            CommandConfiguration(
+                commandName: "install-xcbeautify",
+                abstract: "Checks for XCBeautify installation in the machine. If not found it will try to install using Homebrew.",
+                discussion: "XCBeautify outputs readable xcode logs to console. This command will check for xcbeautify, if not found it will try to install using Homebrew.",
+                helpNames: NameSpecification.shortAndLong
+            )
+        }
+        
+        public func run() throws {
+            let command = """
+            if which xcbeautify;
+            then
+              echo "xcbeautify is installed on the System. Good to Continue 🤞🏻"
+            else
+              echo "Installing xcbeautify ..."
+              sudo brew install xcpretty --verbose
             fi
             """
             let code = Process.runZshCommand(command)
