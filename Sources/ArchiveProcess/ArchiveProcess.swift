@@ -12,6 +12,7 @@ struct ArchiveProcess: ParsableCommand {
             subcommands: [
                 Install.self,
                 Uninstall.self,
+                Release.self,
                 Run.self,
                 Prepare.self,
                 Archive.self,

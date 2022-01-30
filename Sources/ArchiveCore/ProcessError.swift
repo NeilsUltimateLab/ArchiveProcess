@@ -11,6 +11,8 @@ public enum ProcessError: Error {
     case canNotBuild
     case canNotInstall
     case canNotUninstall
+    case canNotZip
+    case canNotExportRelease
     case canNotOpenBuildInfoFile
     case canNotGetBuildInfo
     case canNotGenerateExportOptionsPlist
