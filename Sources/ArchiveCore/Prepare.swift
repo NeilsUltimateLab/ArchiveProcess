@@ -78,7 +78,7 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
               echo "xcbeautify is installed on the System. Good to Continue 🤞🏻"
             else
               echo "Installing xcbeautify ..."
-              sudo brew install xcbeautify --verbose
+              brew install xcbeautify --verbose
             fi
             """
             try Process.runAndThrow(command, error: PreparationError.invalidateXCPrettyCommand)
