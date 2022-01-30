@@ -64,7 +64,7 @@ public extension BuildInfoProvider {
         return try ipaExportPath().appending("/build-path")
     }
     
-    func archiveCommands() throws -> String {
+    func archiveCommands(beutify: Bool = false) throws -> String {
         let info = try buildInfo()
         let path = try archivePath()
         let derivedDataPath = try derivedDataPath()
@@ -78,7 +78,10 @@ public extension BuildInfoProvider {
             "-archivePath", path.wrappedInQuotes,
             "archive"
         ].joined(separator: " ")
-        return "set -o pipefail && \(command) | xcbeautify"
+        if beutify {
+            return "set -o pipefail && \(command) | xcbeautify"
+        }
+        return command
     }
     
     func ipaCommand() throws -> String {

@@ -12,6 +12,9 @@ import Uploader
 import Utilities
 
 public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
+    @Flag
+    var beutify: Bool = false
+    
     public static var configuration: CommandConfiguration {
         CommandConfiguration(subcommands: [Reupload.self, UploadDSYMs.self])
     }
@@ -21,7 +24,7 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         log(">> Running the complete process -------", with: .yellow)
         let startDate = Date()
         try Prepare().run()
-        try Archive().run()
+        try Archive.parse(beutify ? ["--beutify"] : []).run()
         try GenerateIPA().run()
         try UploadDSYMs().run()
         try Reupload(onCompletion: {

@@ -82,14 +82,14 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
               echo "xcbeautify is installed on the System. Good to Continue 🤞🏻"
             else
               echo "Installing xcbeautify ..."
-              sudo brew install xcpretty --verbose
+              sudo brew install xcbeautify --verbose
             fi
             """
             let code = Process.runZshCommand(command)
             if code != 0 {
                 throw PreparationError.invalidateXCPrettyCommand
             } else {
-                log("Successfully completed Install XCPretty Step 🥳", with: .green)
+                log("Successfully completed Install XCBeautify Step 🥳", with: .green)
             }
         }
     }
