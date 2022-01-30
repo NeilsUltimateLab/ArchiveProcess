@@ -19,11 +19,8 @@ jobs:
     - name: Run tests
       run: swift test -v
       
-    - name: ArchiveProcess run
-      run: swift run ArchiveProcess
-      
-    - name: ArchiveProcess release
-      run: ArchiveProcess release
+    - name: ArchiveProcess run and release
+      run: swift run ArchiveProcess release
       
     - name: Create Release
       uses: "marvinpinto/action-automatic-releases@latest"
