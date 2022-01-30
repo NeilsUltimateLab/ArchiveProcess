@@ -45,7 +45,7 @@ extension ArchiveProcess {
             
             // Create zip to the location
             try Process.runAndThrow(
-                "zip .build/release/ArchiveProcess-Intel.zip .build/release/ArchiveProcess",
+                "cd .build/release && zip ArchiveProcess-Intel.zip ArchiveProcess",
                 error: ProcessError.canNotZip
             )
         }
