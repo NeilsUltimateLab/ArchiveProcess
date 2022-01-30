@@ -16,8 +16,7 @@ struct ArchiveProcess: ParsableCommand {
                 Prepare.self,
                 Archive.self,
                 GenerateIPA.self,
-                UploadToDiawi.self,
-                PrePush.self
+                UploadToDiawi.self
             ],
             defaultSubcommand: Install.self
         )

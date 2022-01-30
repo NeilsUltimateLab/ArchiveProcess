@@ -53,18 +53,12 @@ struct UploadDSYMs: ParsableCommand, MeasuredCommand, BuildInfoProvider {
                 let symbolPaths = self.pathsForDSyms(from: archivePath)
                 log("Performing symbolication before uploading to Firebase crashlytics...", with: .green)
                 for dsymPath in symbolPaths {
-                    let symbolicateCode = Process.runZshCommand(self.symbolicateCommand(for: dsymPath, symbolMapPath: symbolMapPath))
-                    if symbolicateCode != 0 {
-                        throw UploadSymbolError.canNotSymbolicateHiddenSymbols
-                    }
+                    try Process.runAndThrow(self.symbolicateCommand(for: dsymPath, symbolMapPath: symbolMapPath), error: UploadSymbolError.canNotSymbolicateHiddenSymbols)
                 }
                 log("Symbolication was successful. Continueing to upload step...", with: .green)
             }
             
-            let code = Process.runZshCommand(uploadScriptCommand(uploadScriptPath: uploadScriptPath, googlePlistPath: googlePlistPath, symbolPath: dSYMsPath))
-            if code != 0 {
-                throw UploadSymbolError.uploadFailed
-            }
+            try Process.runAndThrow(uploadScriptCommand(uploadScriptPath: uploadScriptPath, googlePlistPath: googlePlistPath, symbolPath: dSYMsPath), error: UploadSymbolError.uploadFailed)
         }
     }
     

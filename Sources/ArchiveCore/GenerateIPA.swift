@@ -16,10 +16,7 @@ public struct GenerateIPA: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         try self.measure {
             log(">> Generating IPA from Archive ------", with: .yellow)
             let ipaCommand = try self.ipaCommand()
-            let code = Process.runZshCommand(ipaCommand)
-            if code != 0 {
-                throw ProcessError.canNotGenerateIPA
-            }
+            try Process.runAndThrow(ipaCommand, error: ProcessError.canNotGenerateIPA)
             let path = try self.ipaPath()
             UserDefaults.standard.set(path, forKey: "ipaPath")
             log(">> IPA Generated successfully! 🎉", with: .green)

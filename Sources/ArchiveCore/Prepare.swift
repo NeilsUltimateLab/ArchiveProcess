@@ -54,12 +54,8 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
               sudo gem install xcpretty --verbose
             fi
             """
-            let code = Process.runZshCommand(command)
-            if code != 0 {
-                throw PreparationError.invalidateXCPrettyCommand
-            } else {
-                log("Successfully completed Install XCPretty Step 🥳", with: .green)
-            }
+            try Process.runAndThrow(command, error: PreparationError.invalidateXCPrettyCommand)
+            log("Successfully completed Install XCPretty Step 🥳", with: .green)
         }
     }
     
@@ -85,12 +81,8 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
               sudo brew install xcbeautify --verbose
             fi
             """
-            let code = Process.runZshCommand(command)
-            if code != 0 {
-                throw PreparationError.invalidateXCPrettyCommand
-            } else {
-                log("Successfully completed Install XCBeautify Step 🥳", with: .green)
-            }
+            try Process.runAndThrow(command, error: PreparationError.invalidateXCPrettyCommand)
+            log("Successfully completed Install XCBeautify Step 🥳", with: .green)
         }
     }
     
@@ -118,10 +110,7 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
                     log("Can not find buildInfo.json at : \(currentWorkingPath)", with: .yellow)
                     try BuildInformation.placeholder.write(to: url)
                     log("Opening buildInfo.json file. Please fill the necessary information in it.", with: .yellow)
-                    let openCode = Process.runZshCommand("open . \(url)")
-                    if openCode != 0 {
-                        throw ProcessError.canNotOpenBuildInfoFile
-                    }
+                    try Process.runAndThrow("open . \(url)", error: ProcessError.canNotOpenBuildInfoFile)
                     UserDefaults.standard.setValue(url.path, forKey: "buildInfoPath")
                 }
             }

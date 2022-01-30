@@ -11,7 +11,7 @@ import Utilities
 public extension Process {
     
     @discardableResult
-    static func runZshCommand(_ command: String) -> Int32 {
+    private static func runZshCommand(_ command: String) -> Int32 {
         let process = Process()
         process.launchPath = "/bin/zsh"
         process.arguments = ["-c", command]
@@ -47,4 +47,13 @@ public extension Process {
         return process.terminationStatus
     }
     
+    @discardableResult
+    static func runAndThrow<CommandError>(_ command: String, error: CommandError) throws -> Int32 where CommandError: Error {
+        let code = self.runZshCommand(command)
+        if code != 0 {
+            throw error
+        } else {
+            return code
+        }
+    }
 }

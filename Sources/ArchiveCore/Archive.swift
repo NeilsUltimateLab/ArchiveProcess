@@ -24,10 +24,7 @@ public struct Archive: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         try self.measure {
             log(">> Archiving the project -------", with: .yellow)
             let archiveCommand = try self.archiveCommands(beutify: beutify)
-            let code = Process.runZshCommand(archiveCommand)
-            if code != 0 {
-                throw ProcessError.canNotGenerateArchive
-            }
+            try Process.runAndThrow(archiveCommand, error: ProcessError.canNotGenerateArchive)
             log(">> Archive Generated successfully! 🎉", with: .green)
         }
     }
