@@ -8,13 +8,14 @@ struct ArchiveProcess: ParsableCommand {
     
     static var configuration: CommandConfiguration {
         CommandConfiguration(
-            version: "1.0.3",
+            version: "1.0.4",
             subcommands: [
                 Install.self,
                 Uninstall.self,
                 Release.self,
                 Run.self,
                 Prepare.self,
+                AddBadge.self,
                 Archive.self,
                 GenerateIPA.self,
                 UploadToDiawi.self

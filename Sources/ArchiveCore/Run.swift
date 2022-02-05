@@ -15,6 +15,9 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     @Flag
     var beutify: Bool = false
     
+    @Argument
+    var badgePath: String?
+    
     public static var configuration: CommandConfiguration {
         CommandConfiguration(subcommands: [Reupload.self, UploadDSYMs.self])
     }
@@ -24,7 +27,21 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         log(">> Running the complete process -------", with: .yellow)
         let startDate = Date()
         try Prepare().run()
-        try Archive.parse(beutify ? ["--beutify"] : []).run()
+        if let badgePath = badgePath, let projectPath = self.projectDirectory() {
+            try AddBadge.parse(
+                ["\(badgePath)", "\(projectPath)"]
+            ).run()
+        }
+        try Archive.parse(
+            beutify ? ["--beutify"] : []
+        ).run()
+        
+        if let badgePath = badgePath, let projectPath = self.projectDirectory() {
+            try AddBadge.parse(
+                ["\(badgePath)", "\(projectPath)", "--reset"]
+            ).run()
+        }
+        
         try GenerateIPA().run()
         try UploadDSYMs().run()
         try Reupload(onCompletion: {
@@ -33,6 +50,10 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
             ExecutionProfile.renderProfile()
             Foundation.exit(EXIT_SUCCESS)
         }).run()
+    }
+    
+    private func projectDirectory() -> String? {
+        try? self.basePath()
     }
 }
 

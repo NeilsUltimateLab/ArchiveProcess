@@ -13,6 +13,7 @@ public protocol BuildInfoProvider {
 
 public enum BuildInfoError: Error {
     case canNotFindBuildInfo
+    case canNotFindBasePath
     case canNotFindWorkingDirectory
     case canNotFindExportOptions
 }
@@ -39,6 +40,16 @@ public extension BuildInfoProvider {
 }
 
 public extension BuildInfoProvider {
+    func projectPath() throws -> String {
+        try self.buildInfo().projectPath
+    }
+    
+    func basePath() throws -> String {
+        guard let path = self.workingDirectory else { throw BuildInfoError.canNotFindBasePath }
+        let url = URL(fileURLWithPath: path)
+        return url.deletingLastPathComponent().path
+    }
+    
     func archivePath() throws -> String {
         let info = try self.buildInfo()
         guard let workingDirectory = self.workingDirectory else {
