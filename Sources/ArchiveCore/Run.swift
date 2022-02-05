@@ -12,10 +12,10 @@ import Uploader
 import Utilities
 
 public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
-    @Flag
+    @Flag(help: "If passed then the xcodebuild console output will be send to xcbeutify else raw logs will be printed.")
     var beutify: Bool = false
     
-    @Argument
+    @Argument(help: "If passed the image path for badge overlap, it will replace the AppIcons with the new overlay composition.")
     var badgePath: String?
     
     public static var configuration: CommandConfiguration {
@@ -26,24 +26,36 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     public mutating func run() throws {
         log(">> Running the complete process -------", with: .yellow)
         let startDate = Date()
+        
+        // Prepares the required path and files.
         try Prepare().run()
+        
+        // If badgePath is passed then add the badge to App Icons
         if let badgePath = badgePath, let projectPath = self.projectDirectory() {
             try AddBadge.parse(
                 ["\(badgePath)", "\(projectPath)"]
             ).run()
         }
+        
+        // Archive the project
         try Archive.parse(
             beutify ? ["--beutify"] : []
         ).run()
         
+        // Reset the badge if badge icon path passed.
         if let badgePath = badgePath, let projectPath = self.projectDirectory() {
             try AddBadge.parse(
                 ["\(badgePath)", "\(projectPath)", "--reset"]
             ).run()
         }
         
+        // Generates the IPA from the Archive Step.
         try GenerateIPA().run()
+        
+        // Symbolicate and upload the dSYMs to Firebase.
         try UploadDSYMs().run()
+        
+        // Uploads the IPA to Diawi.
         try Reupload(onCompletion: {
             let components = Calendar.current.dateComponents([.hour, .minute, .second], from: startDate, to: Date())
             log(">> It took \(components.hour ?? 0, color: .green)h - \(components.minute ?? 0, color: .green)m - \(components.second ?? 0, color: .green)s to complete whole process", with: .blue)
