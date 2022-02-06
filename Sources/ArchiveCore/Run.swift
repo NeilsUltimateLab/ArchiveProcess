@@ -38,9 +38,11 @@ public struct Run: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         }
         
         // Archive the project
-        try Archive.parse(
-            beutify ? ["--beutify"] : []
-        ).run()
+        var archiveArguments: [String] = []
+        if beutify {
+            archiveArguments.append("--beutify")
+        }
+        try Archive.parse(archiveArguments).run()
         
         // Reset the badge if badge icon path passed.
         if let badgePath = badgePath, let projectPath = self.projectDirectory() {
