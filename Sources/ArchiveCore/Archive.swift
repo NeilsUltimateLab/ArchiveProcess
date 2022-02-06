@@ -10,6 +10,7 @@ import Utilities
 import ArgumentParser
 import Core
 
+/// Runs the Xcodebuild archive command.
 public struct Archive: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     public init() {}
     
@@ -20,6 +21,7 @@ public struct Archive: ParsableCommand, MeasuredCommand, BuildInfoProvider {
         self._beutify = Flag(wrappedValue: beutify)
     }
     
+    /// Runs `xcodebuild archive` command with time measurement.
     public func run() throws {
         try self.measure {
             log(">> Archiving the project -------", with: .yellow)

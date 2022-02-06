@@ -10,8 +10,10 @@ import ArgumentParser
 import Core
 import Utilities
 
+/// Generates the IPA from the build archive.
 public struct GenerateIPA: ParsableCommand, MeasuredCommand, BuildInfoProvider {
     public init() {}
+    
     public func run() throws {
         try self.measure {
             log(">> Generating IPA from Archive ------", with: .yellow)
