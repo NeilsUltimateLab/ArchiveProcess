@@ -15,7 +15,6 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(name: "Gzip", url: "https://github.com/1024jp/GzipSwift", from: "5.1.1"),
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser", from: "1.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0")
@@ -28,7 +27,6 @@ let package = Package(
             dependencies: [
                 "Utilities",
                 "Core",
-                "Gzip",
                 "Uploader",
                 "ArchiveCore",
                 "Moya",
@@ -58,8 +56,7 @@ let package = Package(
             name: "ArchiveProcessTests",
             dependencies: [
                 "ArchiveProcess",
-                "Moya",
-                "Gzip",
+                "Moya"
             ]
         ),
     ]
