@@ -9,7 +9,17 @@ import Foundation
 import SwiftyTextTable
 
 public func log(_ argument: String, with color: ConsoleColor = .default) {
-    print(argument.colorised(to: color))
+    guard !argument.isEmpty else { return }
+    let string = argument.colorised(to: color)
+    var stampedString: String
+    if #available(macOS 12.0, *) {
+        stampedString = Date().formatted(date: .complete, time: .standard)
+    } else {
+        stampedString = "\(Date())"
+    }
+    stampedString.append(": \(string)")
+    print(stampedString, to: &LogStream.stream)
+    print(stampedString)
 }
 
 public func log(table name: String, _ values: [(String, String)]) {

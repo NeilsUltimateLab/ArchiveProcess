@@ -15,7 +15,7 @@ public extension Process {
         let process = Process()
         process.launchPath = "/bin/zsh"
         process.arguments = ["-c", command]
-        print("Running command -----\n\(command, color: .green)")
+        log("Running command: \n----------\n\(command, color: .green)\n----------", with: .cyan)
         
         process.standardOutput = {
             let pipe = Pipe()
