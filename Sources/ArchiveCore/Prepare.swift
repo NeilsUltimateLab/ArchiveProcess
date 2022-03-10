@@ -18,7 +18,8 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
             PrepareBuildInfo.self,
             PrepareExportOptions.self,
             ClearPreviousArtifacts.self,
-            InstallXCPrettyIfNeeded.self
+            InstallXCPrettyIfNeeded.self,
+            InstallXCbeautifyIfNeeded.self
         ])
     }
     
@@ -28,7 +29,6 @@ public struct Prepare: ParsableCommand, MeasuredCommand {
             try PrepareBuildInfo().run()
             try PrepareExportOptions().run()
             try ClearPreviousArtifacts().run()
-            try InstallXCbeautifyIfNeeded().run()
         }
     }
     
